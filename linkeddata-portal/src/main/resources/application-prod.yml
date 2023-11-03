@@ -1,0 +1,29 @@
+########## 生产环境配置文件 ##########
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  #配置mongo
+  data:
+    mongodb:
+      uri: 
+      #增加驼峰自动映射配置
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+    #配置es
+  elasticsearch:
+    url: 
+server:
+  port: 
+
+mica:
+  xss:
+    enabled: true # 开启xss
+    path-patterns: /** # 拦截的路由，例如: /api/order/**
+#swagger 关闭配置
+springfox:
+  documentation:
+    #总开关(同时设置autho-startup= false ,否则/v3/api-docs等接口仍能访问)
+    enabled: false
+    auto-startup: false
+    swagger-ui:
+      enabled: false

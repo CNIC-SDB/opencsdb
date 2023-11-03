@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: prod
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  #配置mongo
+  data:
+    mongodb:
+      uri: 
+      #增加驼峰自动映射配置
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+  #配置es
+  elasticsearch:
+    url: 
+  neo4j:
+    uri: 
+    authentication:
+      username: 
+      password: 
+
+server:
+  port: 
+
+mica:
+  xss:
+    enabled: true # 开启xss
+    path-patterns: /** # 拦截的路由，例如: /api/order/**
+
+#virtuos 配置
+virtuoso:
+   addr: 
+   user: 
+   password: 
+
+logging:
+  level:
+    root: debug

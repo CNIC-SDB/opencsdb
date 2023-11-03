@@ -1,0 +1,17 @@
+<head>
+    <link href="https://unpkg.com/@triply/yasgui/build/yasgui.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/@triply/yasgui/build/yasgui.min.js"></script>
+</head>
+<body>
+<div id="yasgui"></div>
+<!-- specify the default endpoint -->
+<script>
+    const searchText = localStorage.getItem('link');
+    localStorage.clear('link');
+    const yasgui = new Yasgui(document.getElementById("yasgui"), {
+        requestConfig: { endpoint: searchText },
+        copyEndpointOnNewTab: false,
+    });
+</script>
+</style>
+</body>

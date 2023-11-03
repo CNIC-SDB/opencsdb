@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>semantic</title>
+  <link rel="stylesheet" href="./InteractiveGraph/semantic.css">
+  <link rel="stylesheet" type="text/css" href="./InteractiveGraph/layui.css" />
+  <script src="./InteractiveGraph/jquery-3.2.1.min.js"></script>
+  <script src="./InteractiveGraph/vis.min.js"></script>
+  <script src="./InteractiveGraph/layui/layui.js"></script>
+  <script src="./InteractiveGraph/xm-select.js" type="text/javascript" charset="utf-8"></script>
+  <style type="text/css">.vis-overlay{bottom:0;left:0;position:absolute;right:0;top:0;z-index:10}.vis-active{box-shadow:0 0 10px #86d5f8}</style>
+  <style>
+    .layui-card-body{
+      padding: 0;
+    }
+    .layui-form-item,.layui-card{
+      margin: 0;
+    }
+    /* .xm-body{
+       width: 500px !important;
+     }*/
+    .layui-tab{
+      margin: 0;
+    }
+    .layui-tab,.layui-tab-item{
+      height: 100%;
+    }
+
+    .layui-tab-content {
+      padding: 0;
+      height: calc(100% - 40px);
+    }
+
+    #list-table li {
+      font-size: 16px;
+      list-style: disc !important;
+      margin-left: 12px;
+      line-height: 2;
+    }
+
+    #list-table p {
+      font-size: 16px;
+      line-height: 2;
+    }
+
+    a {
+      color: #84AADA;
+    }
+
+    nav.nav-search.sparql-point {
+      padding: 5px 160px 0 160px;
+      justify-content: flex-start;
+    }
+
+    nav.nav-search.sparql-point i {
+      margin-left: 3px;
+    }
+
+    nav.nav-search.sparql-point input {
+      margin: 0;
+      height: auto;
+      zoom: 150%;
+      position: relative;
+      top: 1px;
+    }
+
+    nav.nav-search.sparql-point p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #169bd5;
+      width: 15rem;
+      margin: 20px 0px 10px 0px;
+    }
+
+    nav.nav-search.section {
+      flex-wrap: wrap;
+    }
+
+    nav.nav-search.section hr {
+      width: 100%;
+    }
+
+    nav.nav-search.section p {
+      color: #999999;
+    }
+
+  </style>
+  <style type="text/css">.vis [class*=span]{min-height:0;width:auto}</style>
+</head>
+<body>
+<nav class="nav-search sparql-point">
+  <p>Select search source</p>
+</nav>
+
+<nav class="nav-search section">
+  <p>OpenCSDB</p>
+  <hr>
+</nav>
+<nav class="nav-search sparql-point">
+  <div class="layui-col-lg2" title="https://www.plantplus.cn/plantsw/sparql">
+    <input checked id="Linked Plant Data" name="Linked Plant Data" type="checkbox"
+           value="https://www.plantplus.cn/plantsw/sparql"/>
+    <label for="Linked Plant Data"><i class="legend-icon"></i>Linked Plant Data<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://micro.semweb.csdb.cn/sparql">
+    <input checked id="Linked Micro Data" name="Linked Micro Data" type="checkbox"
+           value="http://micro.semweb.csdb.cn/sparql"/>
+    <label for="Linked Micro Data"><i class="legend-icon"></i>Linked Micro Data<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://chemdb.semweb.csdb.cn/sparql">
+    <input checked id="Linked Chemdb Data" name="Linked Chemdb Data" type="checkbox"
+           value="http://chemdb.semweb.csdb.cn/sparql"/>
+    <label for="Linked Chemdb Data"><i class="legend-icon"></i>Linked Chemdb Data<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://clinicaltrials.semweb.csdb.cn/sparql">
+    <input checked id="Clinical Trials Data" name="Clinical Trials Data" type="checkbox"
+           value="http://clinicaltrials.semweb.csdb.cn/sparql"/>
+    <label for="Clinical Trials Data"><i class="legend-icon"></i>Clinical Trials Data<i
+            class="connect-icon"></i></label>
+  </div>
+  <!--<div class="layui-col-lg2" title="http://pubmed.semweb.csdb.cn/sparql">
+    <input checked id="Pubmed Biomed Data" name="Pubmed Biomed Data" type="checkbox"
+           value="http://pubmed.semweb.csdb.cn/sparql"/>
+    <label for="Pubmed Biomed Data"><i class="legend-icon"></i>Pubmed Biomed Data<i class="connect-icon"></i></label>
+  </div>-->
+  <div class="layui-col-lg2" title="http://tpdc.semweb.csdb.cn/sparql">
+    <input id="National TP Data" name="National TP Data" type="checkbox" value="http://tpdc.semweb.csdb.cn/sparql"/>
+    <label for="National TP Data"><i class="legend-icon"></i>National TP Data<i class="connect-icon"></i></label>
+  </div>
+</nav>
+<nav class="nav-search sparql-point">
+  <div class="layui-col-lg2" title="http://ncmi.semweb.csdb.cn/sparql">
+    <input id="National Health Data" name="National Health Data" type="checkbox"
+           value="http://ncmi.semweb.csdb.cn/sparql"/>
+    <label for="National Health Data"><i class="legend-icon"></i>National Health Data<i
+            class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://xtipc.semweb.csdb.cn/sparql">
+    <input checked id="Medicinal Plant Data" name="Medicinal Plant Data" type="checkbox"
+           value="http://xtipc.semweb.csdb.cn/sparql"/>
+    <label for="Medicinal Plant Data"><i class="legend-icon"></i>Medicinal Plant Data<i
+            class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://ioz.semweb.csdb.cn/sparql">
+    <input checked id="Zoology Data" name="Zoology Data" type="checkbox"
+           value="http://ioz.semweb.csdb.cn/sparql"/>
+    <label for="Zoology Data"><i class="legend-icon"></i>Zoology Data<i
+            class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://organchem.semweb.csdb.cn/sparql">
+    <input checked id="Organchem Data" name="Organchem Data" type="checkbox"
+           value="http://organchem.semweb.csdb.cn/sparql"/>
+    <label for="Organchem Data"><i class="legend-icon"></i>Organchem Data<i
+            class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://xtbg.semweb.csdb.cn/sparql">
+    <input checked id="XTBG Data" name="XTBG Data" type="checkbox"
+           value="http://xtbg.semweb.csdb.cn/sparql"/>
+    <label for="XTBG Data"><i class="legend-icon"></i>XTBG Data<i
+            class="connect-icon"></i></label>
+  </div>
+</nav>
+<nav class="nav-search sparql-point">
+  <div class="layui-col-lg2" title="https://semweb.scbg.ac.cn/sparql">
+    <input checked id="SCBG Data" name="SCBG Data" type="checkbox"
+           value="https://semweb.scbg.ac.cn/sparql"/>
+    <label for="SCBG Data"><i class="legend-icon"></i>SCBG Data<i
+            class="connect-icon"></i></label>
+  </div>
+</nav>
+
+<nav class="nav-search section" style="flex-wrap: wrap">
+  <p>Global Data Sources</p>
+  <hr style="width: 100%">
+</nav>
+<nav class="nav-search sparql-point">
+  <div class="layui-col-lg2" title="https://dbpedia.org/sparql">
+    <input checked id="DBpedia" name="DBpedia" type="checkbox" value="https://dbpedia.org/sparql"/>
+    <label for="DBpedia"><i class="legend-icon"></i>DBpedia<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://linkedgeodata.org/sparql">
+    <input checked id="LinkedGeoData" name="LinkedGeoData" type="checkbox" value="http://linkedgeodata.org/sparql"/>
+    <label for="LinkedGeoData"><i class="legend-icon"></i>LinkedGeoData<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="https://query.wikidata.org/sparql">
+    <input id="Wikidata" name="Wikidata" type="checkbox" value="https://query.wikidata.org/sparql"/>
+    <label for="Wikidata"><i class="legend-icon"></i>Wikidata<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="https://sparql.wikipathways.org/sparql">
+    <input id="WikiPathways" name="WikiPathways" type="checkbox" value="https://sparql.wikipathways.org/sparql"/>
+    <label for="WikiPathways"><i class="legend-icon"></i>WikiPathways<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="https://bio2rdf.org/sparql">
+    <input id="Bio2RDF" name="Bio2RDF" type="checkbox" value="https://bio2rdf.org/sparql"/>
+    <label for="Bio2RDF"><i class="legend-icon"></i>Bio2RDF<i class="connect-icon"></i></label>
+  </div>
+
+</nav>
+<nav class="nav-search sparql-point">
+  <div class="layui-col-lg2" title="https://sparql.europeana.eu">
+    <input id="Europeana" name="Europeana" type="checkbox" value="https://sparql.europeana.eu"/>
+    <label for="Europeana"><i class="legend-icon"></i>Europeana<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://ods.openlinksw.com/sparql">
+    <input id="OpenLink" name="OpenLink" type="checkbox" value="http://ods.openlinksw.com/sparql"/>
+    <label for="OpenLink"><i class="legend-icon"></i>OpenLink<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="https://sparql.uniprot.org/sparql">
+    <input id="UniProt" name="UniProt" type="checkbox" value="https://sparql.uniprot.org/sparql"/>
+    <label for="UniProt"><i class="legend-icon"></i>UniProt<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://uriburner.com/sparql">
+    <input id="URIBurner" name="URIBurner" type="checkbox" value="http://uriburner.com/sparql"/>
+    <label for="URIBurner"><i class="legend-icon"></i>URIBurner<i class="connect-icon"></i></label>
+  </div>
+  <div class="layui-col-lg2" title="http://lov.okfn.org/dataset/lov/sparql">
+    <input id="Linked Open Vocabularies" name="Linked Open Vocabularies" type="checkbox"
+           value="http://lov.okfn.org/dataset/lov/sparql"/>
+    <label for="Linked Open Vocabularies"><i class="legend-icon"></i>Linked Open Vocabularies<i
+            class="connect-icon"></i></label>
+  </div>
+</nav>
+
+<nav class="nav-search">
+  <input class="issue-search" placeholder="Type here for text search only" type="text">
+  <button class="search-btn" lay-filter="demo1">Search</button>
+</nav>
+<div class="search-example">
+  <img alt="" src="./InteractiveGraph/idea.png"> Try
+  <span class="issue">"阴地银莲花有什么特点？"</span>
+  <span class="issue">"地不容和COVID-19有无关联？"</span>
+  <span class="issue">"对新冠病毒有影响的化合物都有哪些？"</span>
+  <!--<span class="issue">"玉竹的形态特征是什么？"</span>-->
+  <span class="issue">"野棉花的药用部位和主要成分是什么？"</span>
+</div>
+<div class="show-search" style="position: relative;">
+  <div style="padding-bottom: 14px;" class="allentity">
+    <div class="entity">Entity Extraction <span class="origin"></span></div>
+    <span class="dataAwait" style="position: absolute; right: 0;top: 33px;"><img src="./loading.png" class="loading" alt=""> 数据检索中...</span>
+  </div>
+  <!-- 增加logo及图片 -->
+  <div class="answer-wrapper" style="display: flex;align-items: center;background-color: #FAF9F9;padding: 5px;border-radius: 6px;overflow: hidden;">
+    <!-- 根据芳姐意见修改：LOGO固定在上方不用上下居中 update by chenkun 2023年10月7日15:53:36 -->
+    <img src="./favicon.ico" alt="" style="width: 50px;height: 50px;margin-right: 20px; align-self: flex-start; margin-top: 10px; margin-left: 10px;">
+    <div style="flex: 1;">
+      <div id="noAnswerPromptDiv" style="display: none; font-size: 18px; line-height: 30px; color: #84AADA; font-weight: bolder;">查询OpenCSDB知识库无相关内容，以下答案来自百川模型：</div>
+      <!-- 去掉 InteractiveGraph/semantic.css 加粗的影响 update by chenkun 2023年9月21日16:27:31 -->
+      <span class="answer" style="font-size: 18px;line-height: 30px;"></span><span class="llm_answer" style="font-size: 18px;line-height: 30px; font-weight: normal;"></span>
+    </div>
+    <img src="" alt="" style="width: 50px;height: 50px;margin-left: 20px;display: none;" id="show-image">
+  </div>
+  <!-- 增加文本内容 -->
+  <div class="text-result" style="margin-top: 30px; background-color: #fafafa; padding: 10px; border-radius: 6px;line-height: 1.6;font-size: 18px;"></div>
+</div>
+
+
+<!-- 图表 -->
+<div class="canvas-body">
+  <nav class="nav-search section" style="flex-wrap: wrap;padding: 10px 0;">
+    <p>Graph</p>
+    <hr style="width: 100%">
+  </nav>
+  <div id="graphArea"></div>
+
+  <!-- List -->
+  <div id="showList" style="display: none;">
+    <nav class="nav-search section" style="flex-wrap: wrap;padding: 10px 0;">
+      <p>List</p>
+      <hr style="width: 100%">
+    </nav>
+    <div class="layui-form">
+      <div style="width: 200px; position: absolute; right: 95px;top: -60px;">
+        <div class="layui-form-item" style="margin-left: 20px;">
+          <div id="predicateList"></div>
+        </div>
+      </div>
+      <table class="layui-table" style="margin-top: 20px;">
+        <thead>
+        <tr>
+          <th>property</th>
+          <th>object or subject</th>
+          <th>provenance</th>
+        </tr>
+        </thead>
+        <tbody id="list-table"></tbody>
+      </table>
+      <div id="paging" style="text-align: right;"></div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+<div class="mask-layer"><p>loading...</p></div>
+</html>
+<script type="text/javascript">
+  // 依据列表的展开收起功能 2023/10/10 gaoshuai
+  $(function () {
+    $("body").on("click", 'div.item-show', function () {
+      if ($(this).find('span').text() == '收起') {
+        $(this).find('span').text('展开')
+        $(this).find('img').attr('src', '/InteractiveGraph/icon_zhankai.png')
+        $(this).parent().find('p').hide()
+      } else {
+        $(this).find('span').text('收起')
+        $(this).find('img').attr('src', '/InteractiveGraph/icon_shouqi.png')
+        $(this).parent().find('p').show()
+      }
+    })
+  })
+  // 图例颜色
+  var colorArray = ["#9ECBC7", "#7ACDFF", "#D1A4F6", "#F6A671", "#FFA9C6",
+    "#32987A", "#388DFA", "#C256C0", "#BEAC9F","#DF5D5D", "#61D36B",
+    "#3D80B3", "#583EA9", "#AF9034", "#A45B42", "#B3C163",
+    "#8594FF", "#8286BA", "#F9D55E", "#B58A8A"];
+  // graph渲染，将network作为全局变量
+  var container = document.getElementById("graphArea"); // 获取graph渲染demo的ID
+  var nodes = new vis.DataSet([]);
+  var edges = new vis.DataSet([]);
+  var data = {
+    nodes: nodes,
+    edges: edges,
+  };
+  var options = {
+    layout: {
+      improvedLayout: false
+    },
+    physics:{
+      solver: 'forceAtlas2Based',
+      timestep: 0.2,
+    },
+  }
+  var questionTypeOne = []
+  var network = new vis.Network(container, data, options);
+  var AllPath = []
+
+  //xiajl20230525 从后台获取 图中的起点和终点的id
+  //起点
+  //终点(可能有多个终点,用数组保存)
+  /*
+    {"startIri": "A1","endIri": ["https://www.plantplus.cn/Taxon_Stephania_epigaea","https://www.plantplus.cn/Taxon_2222"] }
+    {"startIri": "B1","endIri": ["https://www.baidu.com/1823454","https://www.baidu.com/84883aa"] }
+  */
+  var startIriAndEndIrisArray =[];
+  var allPaths=[];  //记录所有起点到终点的路径信息;
+  var questionType_Global ='';  //记录全局变量问题类型
+  var endpointArray = [];   //xiajl20230720 抽取为全局变量
+  var globalQuestionType='';  //全局变量：问句类型,只用于记录问句类型5和问句类型6；
+  var globalRemainingQuestion=''; //问句类型6的后半句;
+
+  // 结果实体list，例如：['地不容', '千金藤']，在获取列表页数据后自动封装进此数组中
+  // 列表页接口为“findAllPredicateAndObject”
+  // update by chenkun 2023年10月5日16:16:13
+  var answerEntityList = [];
+
+  //xiajl20230524 修改路径选择代码
+  network.on('click',function(params){
+    var allNodes = nodes.get();
+
+    //console.log("******************* 所有的起点和终点对象信息 *******************");
+    //console.log(startIriAndEndIrisArray);
+    //console.log("********************************************");
+    //allPaths = findAllPathsByData();
+    //console.log("===========================查找到的起点和终点的所有路径信息==============")
+    //console.log(allPaths);
+
+    if (params.nodes.length > 0) {
+      //xiajl20230608 用问句类型1来判断  questionType_Global
+      //if ($('.issue-search').val() != '不丹松有什么特点?') {
+      if (questionType_Global == '2' || questionType_Global == '3' ) {
+        var nodeId = params.nodes[0];
+        let path = []
+        allPaths.forEach(x => {
+          //console.log(x);
+          x.forEach(item=>{
+            //console.log(item);
+            item.forEach( _ => {
+              if (_.id == nodeId) {
+                path.push(item)
+              }
+            })
+          })
+        });
+        //console.log("path=");
+        //console.log(path);
+        allNodes.map(_ => {
+          _.color = 'rgba(150,150,150,0.5)';
+          path.forEach(x=>{
+            x.map(item => {
+              if (_.id == item.id ) {
+                let index = choseColor(_.applicationName);
+                _.color = colorArray[index];
+              }
+            })
+          })
+        });
+        nodes.update(allNodes)
+      }
+    } else {   //没有选择任何节点,则恢复初始状态的节点颜色
+      allNodes.map(_ => {
+        let index = choseColor(_.applicationName);
+        _.color = colorArray[index];
+      })
+      nodes.update(allNodes)
+    }
+  })
+
+  // 单机显示路径  备份原有代码
+  network.on('click_old',function(params){
+    var allNodes = nodes.get();
+    if (params.nodes.length > 0) {
+      if ($('.issue-search').val() != '不丹松有什么特点?') {
+        var nodeId = params.nodes[0];
+        let path = []
+        AllPath.map(item => {
+          item.nodes.forEach( _ => {
+            if (_.id == nodeId) {
+              path.push(item)
+            }
+          })
+        })
+        let arr = path[0].nodes
+        allNodes.map(_ => {
+          _.color = 'rgba(150,150,150,0.5)';
+          arr.map(item => {
+            if (_.id == item.id ) {
+              let index = choseColor(_.applicationName);
+              _.color = colorArray[index];
+            }
+          })
+        })
+        nodes.update(allNodes)
+      }
+    } else {
+      allNodes.map(_ => {
+        let index = choseColor(_.applicationName);
+        _.color = colorArray[index];
+      })
+      nodes.update(allNodes)
+    }
+  })
+  // 双击事件打开浮窗
+  network.on('doubleClick',function(properties){
+    if (properties.nodes.length != 0) {
+      //xiajl20230608 用问句类型1来判断  questionType_Global
+      //if ($('.issue-search').val() == '不丹松有什么特点?') {
+      if (questionType_Global == '1') {
+        //console.log("questionTypeOne:" + questionTypeOne);
+        let iri = questionTypeOne.filter(_ => properties.nodes.toString() == _.id)
+        //console.log("iri:" + iri);
+        if (iri[0].iriFlag) {
+          openLayer(iri[0].showIri)
+        } else {
+          alert('当前节点暂无数据')
+        }
+      } else {
+        openLayer(properties.nodes.toString())
+      }
+    }
+  })
+  var answerNum = 0
+  layui.use(['jquery', 'form', 'element', 'laypage', 'layer'], function() {var $ = layui.$;var form = layui.form,layer = layui.layer,element = layui.element,laypage = layui.laypage;
+    var allList = []
+    function listshow(endpointArray,iriList) {
+      $.ajax({
+        type: 'get',
+        dataType: "json",
+        url: `http://semweb.csdb.cn/api/findAllPredicateAndObject?endpoints=${endpointArray.join(",")}&iriList=${iriList}`,
+        success: function (back) {
+          // 问句类型3专用，将所有终点封装进'answerEntityList'中，用于拼接大模型问句
+          if (questionType_Global == '3') {
+            for (let i = 0; i < back.po.length; i++) {
+              let item = back.po[i];
+              answerEntityList.push(item.label[0]);
+            }
+          }
+
+          $('.mask-layer').hide()
+          let list = back
+          //xiajl20230602 获取 显示的中文标签信息
+          console.log(back.showLableList);
+          if (back.showLableList.length > 0){
+            if (showLabelListString.length > 0){
+              showLabelListString += "、" + back.showLableList.join("、");
+            }
+            else{
+              showLabelListString +=  back.showLableList.join("、");
+            }
+            console.log("showLabelListString=:" + showLabelListString);
+          }
+
+          allList.push.apply(allList,list.po)
+          answerNum = list.po.length
+          if (answerNum != 0) {
+            let predicates = list.po;
+            $('.mask-layer').hide()
+            laypage.render({
+              elem: 'paging',
+              count: list.po ? allList.length : 0, //数据总数
+              jump: function (obj) {
+                if (list.po) {
+                  Pagination(allList.slice((obj.curr - 1) * 10, 10 * obj.curr))
+                }
+              }
+            });
+            if (predicates != undefined && predicates.length > 0) {
+              let dataArr = new Array();
+              for (let i = 0; i < predicates.length; i++) {
+                let temp = {name: predicates[i].label, value: predicates[i].iri, selected: true}
+                dataArr.push(temp)
+              }
+              let predicateExternal = {
+                el: '#predicateList',
+                width:10,
+                tips: '请选择',
+                data: dataArr
+              };
+              let predicateSelect = xmSelect.render(predicateExternal)
+            }
+          }
+          setTimeout(function() {
+            if (allList.length == 0) {
+              $('#showList').hide()
+              $('#list-table').html('')
+            }
+          },100)
+        }
+      })
+    }
+    // 列表渲染
+    function Pagination(pageList) {
+      //xiajl20230530 根据回答模板修改问句3的返回信息
+      //$('.answer').html('语义检索发现，'+ answerName + allList.length +'个');
+      // $('.answer').html('经过对多个数据源进行检索，我们发现'+ classListStr +"等" + classListNumber + "种类型的数据可以用来建立"
+      //         + answerName +"的关联。" + "通过这种语义检索，我们发现有" + allList.length +'种' + yEntity + "可以对" + xEntity + "产生影响,"
+      //         + "其中包括" + showLabelListString + "等,具体信息如下图谱和列表所示:"
+      // );
+      //xiajl2023721
+      if (globalQuestionType =='6' || globalQuestionType =='5'){
+        var tempQuestion= showLabelListString + globalRemainingQuestion;
+        console.log("-----showLabelListString-----20230721："+showLabelListString );
+        console.log("问句类型6中拼接后的新问句:" + tempQuestion);
+        //showResultFromLlm(tempQuestion+",请用中文回答。");
+        //xiajl20230726
+        showResultFromLlmContact($('.answer').text() + ",根据上述内容请回答:'" + $(".issue-search").val()+"',请用中文回答。");
+        $('.answer').html('');
+        $('.dataAwait').html('<img src="./loading.png" class="loading" alt="">数据检索中...');
+      }
+
+
+      var tableHtml = ''
+      pageList.forEach(item => {
+        tableHtml += '<tr><td>'
+        item.label.forEach(label => {
+          tableHtml += `<p><span title="http://purl.org/dc/elements/1.1/relation" style="color: #84AADA;cursor: pointer;" attr-href="http://purl.org/dc/elements/1.1/relation">关联</span></p>`
+        })
+        tableHtml += '</td><td>'
+        item.label.forEach(label => {
+          tableHtml += `<p><span title="${item.iri}" style="color: #84AADA;cursor: pointer;" attr-href="${item.iri}">${label}</span></p>`
+        })
+        tableHtml += '</td><td><ul>'
+          tableHtml += `<li><span>${item.applicationName}</span></li>`
+        tableHtml += '</ul></td></tr>'
+      })
+      $('#list-table').html(tableHtml)
+    }
+    checkInvalid()
+
+    var answerName = ''
+    var classListStr = ''
+    var classListNumber = 0 ;
+    var xEntity = '';
+    var yEntity = '';
+    var showLabelListString = '';  //表格中的前2个主要信息项;
+
+
+    // 问句点击事件
+    $('.issue').click(function () {
+      var issueText = $(this).text().replace(/\"/g, '') // 正则去掉双引号
+      $('.issue-search').val(issueText)
+      $('.show-search').show()
+      $('.search-btn').trigger('click')
+    })
+    // 搜索按钮点击事件
+    $('.search-btn').click(function (data) {
+      //xiajl20230525  清空存储起点和终点的数组
+      startIriAndEndIrisArray =[];
+      //xiajl20230602 清空缓存的 showLabelList项 (问句3： 其中包"括地不容和骆驼刺"等)
+      showLabelListString = '';
+      $('.answer').html('');
+      //xiajl20230726 先清空检索依据
+      $('.text-result').html('');
+      $('.text-result').hide();
+      //xiajl20230608 清空存储问句一的结点信息;
+      questionTypeOne = [];
+      globalQuestionType='';
+      globalRemainingQuestion=''
+
+      allList.length = 0
+      $('.layui-tab-title').children(":first-child").trigger('click')
+      clearGraph()
+      $("#showList").hide()
+      endpointArray = [];
+      $("nav.sparql-point input:checked").map((i, c) => {
+        endpointArray.push($(c).val())
+      })
+      // 隐藏答案开头的无答案提示
+      $('#noAnswerPromptDiv').hide();
+      getDataFromQuestion($('.issue-search').val());
+      // 展示依据，用于根据特征找实体，问句类型1-3不展示
+      getTextQuestion($('.issue-search').val())
+      $("#show-image").hide()
+    })
+
+    //xiajl20230822 去除文本中的HTML标签
+    function removeHTMLTags(str) {
+      // 通过正则表达式去除HTML标签
+      return str.replace(/<[^>]+>/g, '').replace("<br","").replace(/\s+/g, '');
+    }
+
+    function truncateString(str, maxLength) {
+      if (str.length <= maxLength) {
+        return str;
+      }
+      return str.substring(0, maxLength) + '...';
+    }
+
+
+    /**
+     * 展示依据，用于根据特征找实体，问句类型1-3不展示
+     * @param question
+     */
+    function getTextQuestion(question) {
+      // 根据特征找实体，展示依据，问句类型1-3不展示
+      if (questionType_Global == 1 || questionType_Global == 2 || questionType_Global == 3) {
+        return;
+      }
+
+      //xiajl20230821 拼接端点信息
+      let orgParam = getSelectOrg();
+      $.ajax({
+        type: 'post',
+        url: `http://semweb.csdb.cn/api/semanticSearch/getSearchResultEntity?question=${question}${orgParam}`,
+        success: function(callback) {
+          console.log("文本内容接口:callback");
+          console.log(callback);
+          if (callback[0].message != '' && callback[0].message != 'false'){
+            $('.text-result').html('<p style="color:#84AADA;margin-bottom:10px;">检索依据来自以下内容：</p>')
+          }
+            callback.forEach((item, index) => {
+            let number = index+1
+            //xiajl20230726 先判读来源字段是否为空
+
+            if (item.message.length > 0 && item.message !='false'){
+              //$('.text-result').append('<p style="padding-bottom: 8px;">'+ number + '、' + truncateString(removeHTMLTags(item.message),150) +'（<a target="_blank" href="'+ item.linkAddress +'">'+ item.nodeName +'</a>）</p>');
+              $('.text-result').append('<p style="padding-bottom: 8px;" title="'+ removeHTMLTags(item.message) + '">' + number + '、' + truncateString(removeHTMLTags(item.message),150) +'（<a target="_blank" href="'+ item.linkAddress +'">'+ item.nodeName +'</a>）</p>');
+              $('.text-result').show();
+            }
+          })
+        }
+      })
+    }
+    //xiajl20230719 抽取查询方法
+    //question:原始查询的问句; remainingQuestion:问句6中的后半部份子问句，与前半部份问句返回的结果一起拼接成新的问句后再传给大模型；
+    function getDataFromQuestion(question,remainingQuestion){
+      // 显示加载层
+      $('.dataAwait').html('<img src="./loading.png" class="loading" alt="">数据检索中...')
+
+      let orgParam = getSelectOrg();
+      $.ajax({
+        type: 'post',
+        url: `http://semweb.csdb.cn/api/semanticSearch/getQuestionType?question=${question}${orgParam}`,
+        // 将本请求设置为同步，先获取问句类型，将问句类型保存为全局变量，再做其他
+        async: false,
+        success: function(callback) {
+          $('.show-search').show()
+          $(".canvas-body").show();
+          $(".entity").show();
+          $(".llm_answer").html("");
+          const questiuonType = callback.type
+          //xiajl20230608 记录问句类型的值
+          questionType_Global = callback.type;
+
+          switch (questiuonType) {
+            case '1' :
+              $("#showList").hide();
+              //drawGraph(endpointArray);
+              drawGraph(endpointArray, question);
+              break;
+            case '2' :
+              $('.origin').children().remove()
+              $('.answer').html('')
+              AllNodes.length = 0
+              AllEdges.length = 0
+              answerName = callback.y ? callback.x +'与'+ callback.y : callback.x
+              findPath(2,endpointArray,question)
+              queryPathInSameClass(callback.x, callback.y, 2, endpointArray)
+              tableList_case1()
+              break;
+            case '3' :
+              $('.origin').children().remove()
+              $('.answer').html('')
+              AllNodes.length = 0
+              AllEdges.length = 0
+              answerName = callback.y ? `对${callback.x}有影响的${callback.y}有`  : `对${callback.x}有影响有`
+              //xiajl20230530
+              xEntity = callback.x ;
+              yEntity = callback.y ;
+              findPath(3,endpointArray,question);
+              queryPathInSameClass(callback.x,callback.y,3,endpointArray)
+              break;
+                  //xiajl20230720 问句类型5的处理
+            case '5' :
+              //重新调用查询子问句, 然后再调用大模型语言获取查询结果，再拼接到语义查询的结果后面
+              var newQuestion = callback.newQuestion;
+              console.log("问句类型5中的新问句newQuestion是:" + newQuestion);
+              globalQuestionType='5';
+              getDataFromQuestion(newQuestion);
+              //showResultFromLlm("己知" + $(".answer").text() +",根据上述内容请回答:" + question+",请用中文回答。");
+              break;
+            case '6' :
+              //重新调用查询子问句,先调用问句类型3， 然后再调用大模型语言获取查询结果，再拼接到语义查询的结果后面
+              //将答案作为第2个子句的上下文组装成一个新问句，再去大模型中查，将大模型生成的答案放在原来子句答案的后面
+              var newQuestion = callback.newQuestion;
+              globalRemainingQuestion = callback.remainingQuestion;
+              globalQuestionType='6';
+              getDataFromQuestion(newQuestion);
+
+              break;
+            default : //xiajl20230719 显示调用大语言模型返回的结果
+              var questionForLlm = $('.issue-search').val();
+              showResultFromLlm(questionForLlm);
+              $('.show-search').show()
+              //$('.dataAwait').html('');
+              //隐藏图表和entity栏;
+              $(".entity").hide();
+              $(".canvas-body").hide();
+              break
+          }
+        }
+      })
+    }
+
+    /**
+     * 起点终点都是同一类的路径
+     * @param type
+
+     * @param endpointArray
+     */
+    function queryPathInSameClass(x, y, type, endpointArray) {
+      let iriList = ''
+      $.ajax({
+        type: 'post',
+        url: 'http://semweb.csdb.cn/api/semanticSearch/queryInSameClass',
+        data: {"x": x, "y": y, "type": type, "endpoints": endpointArray.toString()},
+        success: function (back) {
+          let pathData = []
+          PathStep = back ? back.length : 0
+          SetpNum = 0
+          for (let i = 0; i < back.length; i++) {
+            let data = back[i]
+            //xiajl20230525 获取 起点和终点，保存到对象数组startIriAndEndIrisArray中
+            addStartIriAndEndIris(data.startIri, data.endIri);
+            //xiajl20230530  保存实体类
+            classListStr = data.classList.join("、");
+            classListNumber = data.classList.length;
+            // 数据查询完毕显示问句答案
+            if (type === 3) {
+              $("#showList").show()
+              iriList = data.ends
+              listshow(endpointArray, iriList.join(","))
+            }
+            data.nodes.map((i, c) => {
+              data.edges.map(o => {
+                if (o.from == i.id) {
+                  o.from = i.showIri ? i.showIri : i.id
+                }
+                if (o.to == i.id) {
+                  o.to = i.showIri ? i.showIri : i.id
+                }
+              })
+              i.id = i.showIri ? i.showIri : i.id
+            })
+            AllPath.push(data)
+            addToGraph({nodes: data.nodes, edges: data.edges}, 'filter')
+            if (++SetpNum === PathStep) {
+              allPaths = findAllPathsByData();
+              switch (type) {
+                case 2 :
+                  // let pathData = []
+                  AllPath.forEach(_ => {
+                    pathData.push.apply(pathData, _.nodes)
+                  })
+                  if (pathData.length == 0) {
+                    //xiajl20230727
+                    if (globalQuestionType =='6' || globalQuestionType =='5'){
+                      $('.answer').html('')
+                      showResultFromLlm($('.issue-search').val());
+                    }else{
+                      // $('.answer').html('语义检索发现,' + answerName + '间不存在关联路径_queryPathInSameClass')
+                      // 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+                      queryBaichuan();
+                    }
+                  } else {
+                    classStr = data.classList.join("、");
+                    //获取所有的起点到终点的所有路径;
+                    let allPathsNumber = 0;
+
+                    allPaths.forEach(item => {
+                      allPathsNumber += item.length;
+                    });
+                    // $('.answer').html('语义检索发现,' + answerName + '间存在关联关系,这种联系可以通过' + classStr + "等"
+                    //         + data.classList.length + "种类型的数据进行语义检索而得出。根据检索结果，我们发现它们之间存在着" + allPathsNumber + "条关联路径。这些路径可以帮助我们更好地理解"
+                    //         + answerName + "之间的关系，具体信息如下："
+                    // );
+                    //xiajl20230726
+                    if (globalQuestionType =='6' || globalQuestionType =='5'){
+                      showResultFromLlmContact($('.answer').text() + ",根据上述内容请回答:'" + $(".issue-search").val()+"',请用中文回答。");
+                      $('.answer').html('');
+                    }
+                  }
+                  $("#showList").hide()
+                  break
+              }
+            }
+          }
+        },
+        error: function () {
+          console.log('查询失败')
+        }
+      })
+    }
+
+    /**
+     * findPath
+     * */
+    var PathStep = 0,SetpNum = 0,origin = {}  // 需要调几次question接口
+    function findPath(type,endpointArray,question) {
+      let orgParam = getSelectOrg();
+      $.ajax({
+        type: 'get',
+        //xiajl20230720 把问句作为参数
+        //url: `http://semweb.csdb.cn/api/findPath?endpoints=${endpointArray.join(",")}&question=${$('.issue-search').val()}`,
+        url: `http://semweb.csdb.cn/api/findPath?endpoints=${endpointArray.join(",")}&question=${question}${orgParam}`,
+        success: function (back) {
+          let findPathList = back
+          PathStep = findPathList.pathinfo ? findPathList.pathinfo.length : 0
+          SetpNum = 0
+          origin= {...findPathList}
+          if (PathStep == 0) {
+            let ans = $('.answer').html()
+            if(ans.indexOf("存在关联关系")==-1){
+              $('.origin').children().remove()
+
+              //xiajl20230727 如果问题类型5、6则不显示下面的内容;
+              if (globalQuestionType =='6' || globalQuestionType =='5'){
+                $('.answer').html('')
+                showResultFromLlm($('.issue-search').val());
+              }else {
+                // $('.dataAwait').html('未检索到结果');
+                //$('.answer').html('语义检索发现,'+ answerName + '间不存在关联路径')
+                //xiajl20230725 x和y之间不存在关联路径.
+                // $('.answer').html('语义检索发现,'+ xEntity +'和' + yEntity + '间不存在关联路径')
+                // 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+                queryBaichuan();
+              }
+
+            }
+          } else {
+            findPathList.pathinfo.map(_ => {
+              queryPath(type, _,endpointArray)
+            })
+          }
+          if (type ==2) {
+            origin.yIir.forEach((_, index) => {
+              let ColorIndex = choseColor(_.applicationName);
+              $('.origin').append(`<span title="${_.iri}" style="color:${colorArray[ColorIndex]}" attr-href="${_.iri}">${origin.yName}</span>`)
+              findImage(_.iri)
+            })
+          }
+          origin.xIir.forEach((_, index) => {
+            let ColorIndex = choseColor(_.applicationName);
+            $('.origin').append(`<span  title="${_.iri}" style="color:${colorArray[ColorIndex]}" attr-href="${_.iri}">${origin.xName}</span>`)
+            findImage(_.iri)
+          })
+        }
+      })
+    }
+    // 2023-7-25 图片接口
+    function findImage(iri) {
+      //
+      $.ajax({
+        type: 'post',
+        url: `http://semweb.csdb.cn/api/semanticSearch/findImage?uri=${iri}`,
+        success: function (callback) {
+          if (callback) {
+            $('#show-image').show()
+            $('#show-image').attr('src', callback)
+          } else {
+            $('#show-image').hide()
+          }
+        }
+      })
+    }
+    /***
+     * queryOnePathForQuestion2 or queryOnePathForQuestion3
+     * **/
+    function queryPath(type, item, endpointArray) {
+      let iriList = ''
+      $.ajax({
+        type: 'post',
+        url: `http://semweb.csdb.cn/api/semanticSearch/queryOnePathForQuestion${type}`,
+        dataType: "json",
+        headers : {'Content-Type':'application/json'},
+        data: JSON.stringify(item),
+        success: function (back) {
+          let data = back.data
+          //xiajl20230525 获取 起点和终点，保存到对象数组startIriAndEndIrisArray中
+          //console.log("起点:" + data.startIri + "-->终点信息:" + data.endIri);
+          //console.log(data.endIri);
+          addStartIriAndEndIris(data.startIri,data.endIri);
+          //xiajl20230530  保存实体类
+          classListStr = data.classList.join("、");
+          classListNumber = data.classList.length;
+          // 数据查询完毕显示问句答案
+          if (type == 3) {
+            $("#showList").show()
+            iriList = data.ends
+            listshow(endpointArray, iriList.join(","))
+          }
+          data.nodes.map((i, c) => {
+            data.edges.map(o => {
+              if (o.from == i.id) {
+                o.from = i.showIri ? i.showIri : i.id
+              }
+              if (o.to == i.id) {
+                o.to = i.showIri ? i.showIri : i.id
+              }
+            })
+            i.id = i.showIri ? i.showIri : i.id
+          })
+          AllPath.push(data)
+          addToGraph({nodes: data.nodes, edges: data.edges}, 'filter')
+          if (++SetpNum == PathStep) {
+            allPaths = findAllPathsByData();
+            let pathData = []
+            AllPath.forEach(_ => {
+              pathData.push.apply(pathData,_.nodes)
+            })
+            if (pathData.length == 0) {
+              //xiajl20230727 当是问句类型5、6时，不显示语议检索结果信息，只显示大模型结果
+              if (globalQuestionType =='6' || globalQuestionType =='5'){
+                $('.answer').html('');
+                showResultFromLlm($('.issue-search').val());
+              }else {
+                // $('.answer').html('语义检索发现,'+ answerName + '间不存在关联路径')
+                // 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+                queryBaichuan();
+              }
+
+            } else {
+              //$('.answer').html('语义检索发现,'+ answerName + '间存在关联路径')
+              //xiajl20230530 按回答模板修改
+              let classStr = data.classList.join("、");
+              //获取所有的起点到终点的所有路径;
+              let allPathsNumber = 0;
+
+              allPaths.forEach(item=>{
+                allPathsNumber += item.length;
+              });
+
+              /**
+               * 让大模型总结问句类型2和3的结果 update by chenkun 2023年9月27日09:59:39
+               */
+              // 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+              if(nodes.length == 0 || edges.length == 0){
+                queryBaichuan();
+                return;
+              }
+
+              // 如果语义网中有答案
+              // 1. 封装请求所有参数
+              // 关系图中所有关系
+              let triples = [];
+              // 将关系图转化为Map，便于下面根据点ID直接获取点的详细信息。键为点的id，值为点的信息（名称、机构）
+              let nodeMap = {};
+              let _nodes = nodes.get();
+              for (let i = 0; i < _nodes.length; i++) {
+                let node = _nodes[i];
+                nodeMap[node.id] = {
+                  label_zh: node.label_zh,
+                  type: node.type,
+                  applicationName: node.applicationName,
+                }
+              }
+              // 将关系图转化为三元组，每个三元组包含（主语、谓语、宾语、主语的类型、宾语的类型、机构）
+              let _edges = edges.get();
+              for (let i = 0; i < _edges.length; i++) {
+                let edge = _edges[i];
+                // 根据from和to的id从nodeMap获取节点信息
+                let fromNode = nodeMap[edge.from];
+                let toNode = nodeMap[edge.to];
+                // 封装三元组信息
+                triples.push({
+                  s: fromNode.label_zh,
+                  p: edge.label_zh,
+                  o: toNode.label_zh,
+                  // stype、otype 不要采用驼峰命名，不然后台获取不到
+                  stype: fromNode.type,
+                  otype: toNode.type,
+                  applicationName: fromNode.applicationName,
+                });
+              }
+              console.log('问句：' + $(".issue-search").val());
+              console.log('问句类型：' + globalQuestionType);
+              // 2. 发送请求到后台，让大模型总结问句类型2的结果
+              if (questionType_Global == 2) {
+                let reqData = {
+                  // 用户原始问句，例如：'地不容和COVID-19有无关联？'
+                  question: $(".issue-search").val(),
+                  // 问句中抽取到的实体，例如：'地不容'，'COVID-19'
+                  x: answerName.split('与')[0],
+                  y: answerName.split('与')[1],
+                  // 路径中涉及到的类型list，例如：['药材', '植物', '病毒', '化合物', '药物', '临床试验']
+                  classList: data.classList,
+                  // 路径条数，例如：2
+                  pathNum: allPathsNumber,
+                  // 关系图中所有关系
+                  triples: triples,
+                };
+                console.log(reqData);
+                console.log(JSON.stringify(reqData));
+                $.ajax({
+                  type: "POST",
+                  contentType: 'application/json',
+                  url: `http://semweb.csdb.cn/api/semanticSearch/queryResultForQuestion2`,
+                  data: JSON.stringify(reqData),
+                  success: function (queryResultData) {
+                    // 在页面上展示答案
+                    showAnswer(queryResultData.data.answer);
+                  }
+                });
+              } else if (questionType_Global == 3) {
+                let reqData = {
+                  // 用户原始问句，例如：'对千金藤素有影响的植物都有哪些？'
+                  question: $(".issue-search").val(),
+                  // 问句中抽取到的实体和类，例如：'千金藤素'，'植物'
+                  x: xEntity,
+                  y: yEntity,
+                  // 路径中涉及到的类型list，例如：['药材', '植物', '病毒', '化合物', '药物', '临床试验']
+                  classList: data.classList,
+                  // 结果实体个数，例如：2
+                  answerEntityNum: allPathsNumber,
+                  // 结果实体list，例如：['地不容', '千金藤']
+                  answerEntityList: answerEntityList,
+                  // 关系图中所有关系
+                  triples: triples,
+                };
+                console.log(reqData);
+                console.log(JSON.stringify(reqData));
+                $.ajax({
+                  type: "POST",
+                  contentType: 'application/json',
+                  url: `http://semweb.csdb.cn/api/semanticSearch/queryResultForQuestion3`,
+                  data: JSON.stringify(reqData),
+                  success: function (queryResultData) {
+                    // 在页面上展示答案
+                    showAnswer(queryResultData.data.answer);
+                  }
+                });
+              }
+
+              // $('.answer').html('语义检索发现,'+ answerName + '间存在关联关系,这种联系可以通过'+ classStr +"等"
+              //         + data.classList.length + "种类型的数据进行语义检索而得出。根据检索结果，我们发现它们之间存在着" + allPathsNumber + "条关联路径。这些路径可以帮助我们更好地理解"
+              //         + answerName + "之间的关系，具体信息如下："
+              // );
+              //xiajl20230726
+              if (globalQuestionType =='6' || globalQuestionType =='5'){
+                showResultFromLlmContact($('.answer').text() + ",根据上述内容请回答:'" + $(".issue-search").val()+"',请用中文回答。");
+                $('.answer').html('');
+              }
+
+            }
+            $("#showList").hide()
+          }
+        }
+      })
+    }
+    /**
+     * 绘制图标
+     */
+    function drawGraph(endpointArray,question) {
+      $.ajax({
+        type: 'post',
+        //url: `http://semweb.csdb.cn/api/semanticSearch/getSemanticSearchResult?question=${$('.issue-search').val()}&endpoints=${endpointArray.join(",")}&queryType=graph`,
+        url: `http://semweb.csdb.cn/api/semanticSearch/getSemanticSearchResult?question=${question}&endpoints=${endpointArray.join(",")}&queryType=graph`,
+        success: function (back) {
+          if (back.data && back.data.startNodes.length > 0) {
+            console.log(back.data.info)
+            $('.show-search').show()
+            $('.origin').children().remove()
+            let callback = back.data.vectorContext
+            if(callback!=""){
+              // $('.text-result').html('<p style="color:#84AADA;margin-bottom:10px;">检索依据来自以下内容：</p>')
+              $('.text-result').html('<p style="color:#84AADA;margin-bottom:10px;">检索依据来自以下内容：</p>' +
+                      '<div id="alwaysShow"></div>' +
+                      '<div  id="item-content-div"> ' +
+                      '<div  id="extend">\n' +
+
+                      ' </div>' +
+
+                      '</div>');
+            }
+            callback.forEach((item, index) => {
+              let number = index + 1;
+              // 2023/10/10 要求依据默认展示前4个，后面的11个点击展开按钮展示
+              if (number > 4) {
+                $('#extend').append('<p style="padding-bottom: 8px;display: none" title="' + item.page_context + '">' + number + '、' + truncateString(item.page_context, 150) + '（<a target="_blank" href="' + item.endPointUrl + '">' + item.dataCenterName + '</a>）</p>');
+              } else {
+                $('#alwaysShow').append('<p style="padding-bottom: 8px;" title="' + item.page_context + '">' + number + '、' + truncateString(item.page_context, 150) + '（<a target="_blank" href="' + item.endPointUrl + '">' + item.dataCenterName + '</a>）</p>');
+              }
+            })
+            $('#item-content-div').append('  ' +
+                    '<div class="item-show">\n' +
+                    '   <span>展开</span>\n' +
+                    '  <img src="/InteractiveGraph/icon_zhankai.png"></div>\n');
+            $('.text-result').show();
+
+            // 展示问句展示跳转连接startNodes and endNodes 共5个
+            back.data.startNodes.forEach((_, index) => {
+              if (index < 2) {
+                let ColorIndex = choseColor(_.applicationName);
+                $('.origin').append(`<span title="${_.showIri}" style="color:${colorArray[ColorIndex]}" class='openLayer' attr-href="${_.showIri}">${_.label}</span>`)
+                findImage(_.showIri)
+              }
+            })
+            back.data.endNodes.forEach((_, index) => {
+              if (5 - $('.origin').children().length) {
+                let ColorIndex = choseColor(_.applicationName);
+                $('.origin').append(`<span title="${_.showIri}" style="color:${colorArray[ColorIndex]}" class='openLayer' attr-href="${_.showIri}">${_.label}</span>`)
+                findImage(_.showIri)
+              }
+            })
+            // 展示answer语句
+            //$('.answer').html(back.data.answer)
+            //xiajl20230530 修改参照语议模板回答;
+            //1不丹具有169个特征属性，这些特性主要来自于DBpedia和Linked Plant Data。其中主要包括学名不丹松、分类:pinus，以及其他相关的特征属性。这些特征属性的信息可以在下图谱中查看。
+            let startNodesStr="";
+            //拼接数据源
+            if (back.data.startNodes.length){
+              back.data.startNodes.forEach(item=>{
+                if ( ! startNodesStr.includes(item.applicationName)) {
+                  startNodesStr += item.applicationName + ",";
+                }
+              })
+            }
+            //拼接属性键值对
+            let tempStr="";
+            //xiajl20230720
+            if (back.data.propertyList){
+              console.log("------back.data.propertyList20230720:---------");
+              console.log(back.data.propertyList);
+              if (back.data.propertyList.length){
+                back.data.propertyList.forEach(item=>{
+                  for (let [k,v] of Object.entries(item)){
+                    tempStr += k +":" + v + ", ";
+                  }
+                })
+              }
+            }
+
+            console.log("tempStr=:" + tempStr);
+            //xiajl20230720 如果返回的内容是没有找到合适的值，则不要显示后半段语句内容。
+            if (!back.data.answer.includes("未检索到合适的内容")){
+              // 在页面上展示答案
+              showAnswer(back.data.answer);
+              //xiajl20230726
+              if (globalQuestionType=='6' || globalQuestionType=='5'){
+                showResultFromLlmContact("己知"+ $('.answer').text() +",根据上述内容，请回答'" + $(".issue-search").val() + "', 请用中文回答。");
+                  $('.answer').html('');
+              }
+            }else
+            {
+              //20230727 如果是大模型在检索答案，则不用显示语义检索答案
+              if (globalQuestionType=='6' || globalQuestionType=='5'){
+                $('.answer').html('');
+              }else {
+                $('.answer').html(back.data.answer + "。");
+              }
+            }
+            //xiajl20230602 修改
+            //$('.dataAwait').text('检索完毕')
+            if (globalQuestionType =='6' || globalQuestionType =='5'){
+              $('.dataAwait').html('<img src="./loading.png" class="loading" alt="">数据检索中...')
+            }else{
+              // $('.dataAwait').text('')
+            }
+
+            // visjsGroups 数据处理
+            if (back.data.visjsGroups.length) {
+              // visjsGroups 循环数组
+              back.data.visjsGroups.forEach((item, index) => {
+                if (index < 200) { // 最大展示200条
+                  setTimeout(function() {
+                    // 不重复更新 update by 陈锟 2023年4月4日14:42:37
+                    addToGraph({nodes: item.nodes, edges: item.edges})
+                  }, (index+1) * 200)
+                }
+                item.nodes.forEach(_ => {
+                  questionTypeOne.push(_)
+                })
+              })
+            } else {
+              // 如果接口数据visjsGroups为空展示
+              clearGraph();
+            }
+          } else {
+            // 如果接口报错
+            $('.show-search').show()
+            $('.origin').children().remove()
+            clearGraph();
+
+            // 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+            queryBaichuan();
+          }
+
+          tableList_case1();
+        },
+        error: function() {
+          alert('查询失败')
+        }
+      })
+    }
+
+    /**
+     * 清空 visjs network 数据
+     */
+    function clearGraph() {
+      nodes.clear()
+      edges.clear()
+    }
+
+    (function initColor(){
+      $("nav.sparql-point label").each((i, v) => {
+        $(v).find("i.legend-icon").css({"background-color": colorArray[i]})
+      })
+      $('input[type=checkbox]:checked').each(function() {
+        $(this).parent().find('label').css({'font-weight': '600'})
+      });
+    })()
+
+    $('input[type=checkbox]').change(function() {
+      if ($(this).is(':checked')) {
+        $(this).parent().find('label').css({'font-weight': '600'})
+      } else {
+        $(this).parent().find('label').css({'font-weight': '400'})
+      }
+    })
+
+    var AllNodes = []
+    var AllEdges = []
+    // 数据重新整合为页面展示字段
+    function addToGraph(data, filter) {
+      data.nodes.forEach(item => {
+        let index = choseColor(item.applicationName);
+        item.label_zh = item.label_zh;
+        item.title = `名称：${item.label} , 机构：${item.applicationName} , ${item.iriFlag == true ? 'Resource , iri：' + item.showIri : 'Literal'}`, // 悬浮展示
+                item.label = getLabel(item.label), // 标题
+                item.borderWidth = 2, // 边框大小
+                item.group = item.applicationName, // 每组数据
+                item.shape = "box" // 形状为矩形
+        item.color = colorArray[index]
+      })
+      data.edges.forEach(item => {
+        item.arrows = { to: true } // 箭头
+      })
+      // 增量更新数据
+      if (!filter) {
+        nodes.add(data.nodes);
+        edges.add(data.edges);
+      } else {
+        // 全部节点数据去重
+        const filteredNodes = data.nodes.filter(newItem => !AllNodes.some(totalItem => newItem.id == totalItem.id));
+        nodes.add(filteredNodes);
+        AllNodes.push.apply(AllNodes,data.nodes)
+        // 全部边数据去重
+        const filteredEdges = data.edges.filter(newItem => !AllEdges.some(totalItem => (newItem.to == totalItem.to && newItem.from == totalItem.from) && newItem.label == totalItem.label));
+        edges.add(filteredEdges);
+        AllEdges.push.apply(AllEdges,data.edges)
+      }
+    }
+
+    /**
+     * 限定label最大宽度，超出部分显示...
+     * @author 陈锟
+     * @date 2023年4月4日11:09:04
+     */
+    function getLabel(label) {
+      let maxLength = 20;
+      if (label && getLength(label) > maxLength) {
+        return label.substring(0, maxLength) + '...';
+      } else {
+        return label;
+      }
+    }
+
+    /**
+     * 获取字符串长度，中文算2个字符
+     * @author 陈锟
+     * @date 2023年4月4日11:09:04
+     */
+    function getLength(str) {
+      var len = 0;
+      for (var i = 0; i < str.length; i++) {
+        var c = str.charCodeAt(i);
+        // 单字节加1
+        if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+          len++;
+        } else {
+          len += 2;
+        }
+      }
+      return len;
+    }
+
+    function checkInvalid() {
+      let $div = $("nav.sparql-point div");
+      $div.each((index, div) => {
+        let $div = $(div);
+        let $input = $div.find("input");
+        $.ajax({
+          type: "GET",
+          timeout: 5000, // 设置超时时间为5秒，有些端点3秒内不一定连接得上
+          url: `http://semweb.csdb.cn/api/semanticSearch/isAccessible?endpoint=${$input.val()}`,
+          success: function (response) {
+            let $i = $div.find("i.connect-icon");
+            if (response === false) {
+              $input.prop("disabled", true)
+            } else {
+              $i.css("background-color", "#1ED76D");
+              $input.prop("disabled", false)
+            }
+          },
+          error: function (response) {
+            $input.prop("checked", false)
+            $input.prop("disabled", true)
+          }
+        })
+      })
+    }
+  });
+  // 点击打开浮窗
+  $(document).on('click', '.origin span', function(e) {
+    let iri = $(this).attr('attr-href')
+    openLayer(iri)
+  });
+  // 列表点击打开浮窗
+  $(document).on('click', '#list-table span', function(e) {
+    let iri = $(this).attr('attr-href')
+    openLayer(iri)
+  });
+  // 弹框
+  function openLayer(iri) {
+    $('.mask-layer').show()
+    $.ajax({
+      type: "GET",
+      timeout: 4000,
+      url: `http://browser.semweb.csdb.cn/list?uri=${window.btoa(iri)}`,
+      success: function(_) {
+        $('.mask-layer').hide()
+        if(!_.flag) {
+          const aTag = document.createElement('a')
+          aTag.href = iri
+          aTag.target = '_blank'
+          aTag.click()
+          this.loading = false
+        } else {
+          layer.closeAll();
+          layer.open({
+            maxmin: true,
+            title:'Linked Data Browser',
+            type: 2,
+            area: ['60%', '80%'],
+            offset: 'rt',
+            shade: 0,
+            content: `http://browser.semweb.csdb.cn/?${iri}`
+          });
+          this.loading = false
+        }
+      },
+      error: function() {
+        $('.mask-layer').hide()
+        window.open(iri)
+      }
+    })
+  }
+  function choseColor(applicationName) {
+    let index = -1;
+    $("nav.sparql-point label").each((i, v) => {
+      if ($(v).attr("for") === applicationName) {
+        index = i;
+        if($(v).css("background-color")==='rgba(0, 0, 0, 0)'){
+          $(v).find("i.legend-icon").css({"background-color": colorArray[index]})
+        }
+      }
+    })
+    return index;
+  }
+
+  //xiajl20230524 查找两点之间的所有路径
+  //定义路径查找函数findPaths，输入参数为点A与点B的id，返回参数为所有符合条件的路径数组
+  function findPaths(network,startNodeId, endNodeId) {
+    var paths = [];
+
+    // 使用深度优先搜索算法查找所有可能的路径
+    function dfs(node, path) {
+      if (null != node && node.id === endNodeId) {
+        // 找到一条符合条件的路径
+        paths.push(path);
+      } else {
+        // 继续深度优先搜索
+        if(null != node){
+          var neighbors = network.getConnectedNodes(node.id);
+          for (var i = 0; i < neighbors.length; i++) {
+            var neighborNode = nodes.get(neighbors[i]);
+            if (!path.includes(neighborNode)) {
+              dfs(neighborNode, path.concat(neighborNode));
+            }
+          }
+        }
+      }
+    }
+
+    // 开始深度优先搜索
+    var startNode = nodes.get(startNodeId);
+    dfs(startNode, [startNode]);
+
+    return paths;
+  }
+
+
+  //xiajl20230525 把起点，终点数组 对象加入到 全局对象数组中
+  //startIri: String,  endIri: String数组;
+  function addStartIriAndEndIris(startIri,endIri){
+    let obj = {};
+    obj.startIri= startIri;
+    obj.endIri = endIri;
+    if (startIriAndEndIrisArray.length == 0){   //数组为空
+      startIriAndEndIrisArray.push(obj);
+    }
+    else{  //数组非空
+      let isFound= false;
+      startIriAndEndIrisArray.map(item=>{
+        if (obj.startIri == item.startIri){  //开始节点相等
+          isFound = true;
+          //判断是否存在 终点
+          if(obj.endIri!=null){
+            obj.endIri.forEach(y=>{
+              if (!item.endIri.includes(y)){
+                item.endIri.push(y);
+              }
+            });
+          }
+        }
+      });
+      if (!isFound){
+        startIriAndEndIrisArray.push(obj);
+      }
+    }
+  }
+
+
+  //xiajl20230325 查找图中所有的 起点-->终点的路径
+  function findAllPathsByData(){
+    let allPaths=[];
+    startIriAndEndIrisArray.forEach(item=>{
+      let startIri = item.startIri;
+      let endIri = item.endIri;
+      endIri.forEach(x=>{
+        let path = findPaths(network,startIri,x);
+        if (!allPaths.includes(path)){
+          allPaths.push(path);
+          //console.log("起点:" + startIri + " , 终点:" + x + "路径信息为:");
+          //console.log(path);
+        }
+      })
+    });
+    return allPaths;
+  }
+
+  //xiajl20230719 显示调用大语言模型返回结果
+  function showResultFromLlm(questionForLlm){
+    let orgParam = getSelectOrg();
+    $.ajax({
+      type: "POST",
+      //timeout: 20000, // 设置超时时间为5秒
+      url: `http://semweb.csdb.cn/api/semanticSearch/queryResultForLlm?question=${questionForLlm}${orgParam}`,
+      success: function (data) {
+        $('.dataAwait').html('');
+        // 替换换行符使得答案在页面上能换行 update by chenkun 2023年9月21日16:19:56
+        let answer = data.replace(/\n\n/g, "<br>").replace(/\n/g, "<br>");
+        $(".llm_answer").html(answer);
+        $(".llm_answer").show();
+      },
+      error: function (response) {
+        $('.dataAwait').html('');
+      }
+    })
+  }
+
+  function getSelectOrg() {
+    let input = $("nav.nav-search.sparql-point div.layui-col-lg2>input:checked");
+    let str = "";
+    $.each(input, function (i, v) {
+      str += "&linkAddress=" + $(v).val()
+    })
+    return encodeURI(str);
+  }
+
+  //xiajl20230726 通过拼接问句的方式获取大模型结果
+  function showResultFromLlmContact(questionForLlm) {
+    $.ajax({
+      type: "POST",
+      url: `http://semweb.csdb.cn/api/semanticSearch/queryResultForLlmContact?questionForLlm=` + questionForLlm,
+      success: function (data) {
+        $('.dataAwait').html('');
+        $(".llm_answer").html(data);
+        $(".llm_answer").show();
+      },
+      error: function (response) {
+        $('.dataAwait').html('');
+      }
+    })
+  }
+
+
+  function tableList_case1() {
+    setTimeout(function () {
+      $("#showList").show();
+      let _edges = edges.get();
+      layui.laypage.render({
+        elem: 'paging',
+        count: _edges.length, //数据总数
+        jump: function (obj) {
+          dataList(_edges.slice((obj.curr - 1) * 10, 10 * obj.curr))
+        }
+      });
+    }, 1000)
+  }
+
+    function dataList(edges) {
+      $('#list-table').html('');
+      let _nodes = nodes.get();
+      edges.forEach(edge => {
+        let $tr = $("<tr>");
+        // Property
+        $tr.append($("<td>").append($("<p>").text(edge.label)));
+        // Object or Subject
+        _nodes.forEach(node => {
+          if (edge.to === node.id) {
+            let title;
+            try {
+              title = node.title.match(/名称：([\s\S]*) 机构/)[1];
+            } catch (e) {
+            }
+            if (node.showIri.startsWith("http")) {
+              $tr.append($("<td>").append($("<p>").append($(`<span style="color: #84AADA;cursor: pointer;" attr-href="${node.showIri}" title="${title}">`).text(node.label))));
+            } else {
+              $tr.append($("<td>").append($(`<p title="${title}">`).text(node.label)));
+            }
+            return
+          }
+        })
+        // Provenance
+        _nodes.forEach(node => {
+          if (edge.from === node.id) {
+            $tr.append($("<td>").append($("<p>").text(node.group)));
+          }
+        })
+        $('#list-table').append($tr);
+      })
+    }
+
+  /**
+   * 如果语义网中无答案，则直接根据百川模型进行回答，并提示答案来自于百川
+   *
+   * @author chenkun
+   * @since 2023年10月7日16:19:11
+   */
+  function queryBaichuan () {
+    $.ajax({
+      type: 'post',
+      url: 'http://semweb.csdb.cn/api/semanticSearch/queryBaichuan',
+      data: {
+        question: $('.issue-search').val()
+      },
+      success: function(data) {
+        // 在页面上展示答案
+        showAnswer(data.data.answer, true);
+      }
+    });
+  }
+
+  /**
+   * 在页面上展示答案（通用方法，所有展示答案均应该使用本方法）
+   *
+   * @param answer 字符串
+   * @param noAnswerFlag 布尔值，无答案为true，有答案为false，默认为false
+   * @author chenkun
+   * @since 2023年10月7日16:19:11
+   */
+  function showAnswer(answer, noAnswerFlag) {
+    // 如果语义网中无答案，则在开头提示答案来自于百川
+    if (noAnswerFlag) {
+      // 语义网中无答案
+      $('#noAnswerPromptDiv').show();
+      // 既然只有答案，那么隐藏图表
+      $(".canvas-body").hide();
+    } else {
+      // 语义网中有答案
+      $('#noAnswerPromptDiv').hide();
+    }
+    // 替换换行符使得答案在页面上能换行
+    answer = answer.replace(/\n\n/g, "<br>").replace(/\n/g, "<br>");
+    // 展示答案
+    $('.answer').html(answer);
+    // 查询结束，隐藏加载层
+    $('.dataAwait').text('');
+  }
+
+
+</script>
